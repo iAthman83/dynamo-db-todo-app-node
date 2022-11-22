@@ -10,14 +10,44 @@ AWS.config.update({
 const dynamoClient = new AWS.DynamoDB.DocumentClient();
 const TABLE_NAME = "todo-api";
 
+
+// get all todos
 const getTodos = async () => {
   const params = {
     TableName: TABLE_NAME
   }
 
-  const todos = await dynamoClient.scan(params).promise();
-  console.log(todos)
-  return todos
+  return await dynamoClient.scan(params).promise();
 }
 
-getTodos()
+// get one todo
+const getTodoById = async (id: string) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {id}
+  }
+
+  return await dynamoClient.get(params).promise(); 
+}
+
+// add or update todo
+const addOrUpdateTodo = async (title: object) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Item: title
+  }
+
+  return await dynamoClient.put(params).promise()
+}
+
+// delete todo
+const deleteTodo = async (id: string) => {
+  const params = {
+    TableName: TABLE_NAME,
+    Key: {id}
+  }
+
+  return await dynamoClient.delete(params).promise()
+}
+
+export {dynamoClient, getTodos, getTodoById, addOrUpdateTodo, deleteTodo}
